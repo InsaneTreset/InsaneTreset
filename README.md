@@ -1,81 +1,97 @@
-[option-D-tech-only.md](https://github.com/user-attachments/files/27279444/option-D-tech-only.md)
+[option-D-tech-only.md](https://github.com/user-attachments/files/27279764/option-D-tech-only.md)
 <h1>Julio Juárez</h1>
 
 <p>
   <code>backend · ai · infra · cdmx 🇲🇽</code><br/>
-  Production systems en Go, React e IA aplicada.
+  Production systems in Go, React, and applied AI.
 </p>
 
 ---
 
-### Stack que uso a diario
+### Stack I use daily
 
 #### 🧱 Backend
 
-- **Go** — mi lenguaje principal. Chi para routing, Huma v2 para APIs typed con OpenAPI auto-generado, River para job queues sobre Postgres (sin Redis), context everywhere, cero pánico en producción.
-- **PostgreSQL** — particionado por mes, índices funcionales, CopyFrom para ingestas de 15M+ filas en minutos, pgvector para embeddings, JSONB cuando vale la pena.
-- **Redis** — cache + pub/sub. Solo cuando Postgres ya no alcanza.
-- **gRPC + Protobuf** — comunicación entre servicios internos.
+**Languages**
+
+- **Go** — my primary language. Chi for routing, Huma v2 for typed APIs with auto-generated OpenAPI, River for job queues on top of Postgres (no Redis needed), context everywhere, zero panics in production.
+- **Node.js + TypeScript** — Fastify or NestJS for APIs, Zod for runtime validation, BullMQ for queues, tRPC when client and server share the codebase. `strict: true` always.
+- **C# / .NET 8+** — ASP.NET Core minimal APIs, EF Core with proper migrations, MediatR for CQRS, Hangfire for background jobs, dependency injection done right.
+- **Python** — FastAPI when I need quick LLM-heavy services, SQLAlchemy 2.x, Pydantic v2 for typed contracts, Celery/RQ for async work.
+
+**Patterns**
+
+- Clean Architecture / Hexagonal — domain at the center, infra at the edges. Same pattern across Go, .NET, and Node so the team can context-switch without re-learning.
+- Repository + Unit of Work for write paths; direct read models for queries.
+- Outbox pattern + idempotent consumers for anything async.
+- Typed contracts end-to-end (OpenAPI in Go/.NET, Zod/tRPC in Node, Pydantic in Python).
+
+**Storage & comms**
+
+- **PostgreSQL** — monthly partitioning, functional indexes, `CopyFrom` for 15M+ row ingests in minutes, pgvector for embeddings, JSONB when it earns its place.
+- **Redis** — cache + pub/sub. Only when Postgres is no longer enough.
+- **gRPC + Protobuf** — for internal service-to-service comms.
+- **Message brokers** — NATS / RabbitMQ / Kafka, picked by problem, not by hype.
 
 #### 🎨 Frontend
 
-- **React 19** con Suspense + concurrent rendering. Server Components donde aplica.
-- **Vite** para bundling rápido. **Astro** para landings estáticas con Core Web Vitals 95+.
-- **TypeScript estricto** — `strict: true`, `noUncheckedIndexedAccess`, sin `any`.
-- **Tailwind + design tokens** en CSS custom properties.
+- **React 19** with Suspense + concurrent rendering. Server Components where they make sense.
+- **Vite** for fast bundling. **Astro** for static landings hitting Core Web Vitals 95+.
+- **Strict TypeScript** — `strict: true`, `noUncheckedIndexedAccess`, no `any`.
+- **Tailwind + design tokens** as CSS custom properties.
 
-#### 🧠 IA / LLMs en producción
+#### 🧠 AI / LLMs in production
 
-- **Claude API** (Anthropic) — mi principal. Function calling, prompt caching para 90% menos costo, batching cuando aplica.
-- **Gemini API** (Google) — multimodal y precio agresivo en 1.5 Flash.
-- **RAG sobre datos estructurados** — no solo PDFs. Embeddings en Postgres + retrieval híbrido (vectores + filtros SQL).
-- **Fallbacks entre modelos** — si Claude se cae, Gemini responde. Si los dos se caen, respuesta cacheada del último ok.
+- **Claude API** (Anthropic) — my main. Function calling, prompt caching for 90% cost reduction, batching when applicable.
+- **Gemini API** (Google) — multimodal and aggressive pricing on 1.5 Flash.
+- **RAG over structured data** — not just PDFs. Embeddings in Postgres + hybrid retrieval (vectors + SQL filters).
+- **Cross-model fallbacks** — if Claude goes down, Gemini answers. If both go down, the last cached good response.
 
-#### 🚢 Infraestructura
+#### 🚢 Infrastructure
 
-- **Kubernetes** — K3s self-hosted para entornos pequeños, GKE para producción seria.
-- **GCP** — GKE, Cloud SQL, Cloud Storage, Application Default Credentials para auth limpia.
-- **AWS** — Amplify + CloudFront para frontends estáticos, S3 + Lambda donde aplica.
-- **Docker + GitHub Actions** — CI/CD sin sufrir.
+- **Kubernetes** — K3s self-hosted for small environments, GKE for serious production.
+- **GCP** — GKE, Cloud SQL, Cloud Storage, Application Default Credentials for clean auth.
+- **AWS** — Amplify + CloudFront for static frontends, S3 + Lambda where it fits.
+- **Docker + GitHub Actions** — CI/CD without suffering.
 - **Cloudflare** — proxy + cache + WAF.
 
-#### 🔧 Datos
+#### 🔧 Data
 
-- **SQL avanzado** — window functions, CTEs recursivos, query plans, cuando un índice salva el día.
-- **CDC** con Debezium / lógica custom en Postgres (logical replication).
-- **ETL** — Python para scripting one-shot, Go para pipelines en producción.
-- **BigQuery** — warehouse cuando los datos pasan los 100GB.
+- **Advanced SQL** — window functions, recursive CTEs, query plans, knowing when an index saves the day.
+- **CDC** with Debezium / custom logic via Postgres logical replication.
+- **ETL** — Python for one-shot scripting, Go for production pipelines.
+- **BigQuery** — warehouse once data crosses 100GB.
 
 #### 🛠 Daily drivers
 
 ```yaml
-editor:    cursor + vscode
-shell:     zsh + tmux
-terminal:  ghostty
-ai_tools:  claude code · cursor agent · github copilot
-sketches:  excalidraw · figma cuando la cosa va a producción
-notes:     obsidian (vault local, sync con git)
+editor:     cursor + vscode
+shell:      zsh + tmux
+terminal:   ghostty
+ai_tools:   claude code · cursor agent · github copilot
+sketches:   excalidraw · figma when it ships
+notes:      obsidian (local vault, git-synced)
 when_angry: bash + grep + sed + awk
 ```
 
 ---
 
-### Cómo programo
+### How I code
 
-- **Build less. Ship faster.** Cada línea es liability — pensar antes de escribir.
-- **No premature abstraction.** Tres líneas similares > un mal abstract.
-- **Validar en bordes**, confiar adentro. No defensive code para casos imposibles.
-- **Idempotencia** en todo lo async. Si el job corre dos veces, no pasa nada.
-- **Si está en mi código, lo he debuggeado a las 3 AM.**
+- **Build less. Ship faster.** Every line is liability — think before you write.
+- **No premature abstraction.** Three similar lines beats a bad abstraction.
+- **Validate at the edges**, trust inside. No defensive code for impossible cases.
+- **Idempotency** in everything async. If the job runs twice, nothing breaks.
+- **If it's in my code, I've debugged it at 3 AM.**
 
 ---
 
-### Lo que más me prende
+### What gets me hyped
 
-- LLMs en producción real (no demos), con costo controlado y fallbacks de verdad.
-- Postgres exprimido al máximo antes de meter Redis o un vector DB nuevo.
-- Sistemas async confiables con River + outbox pattern.
-- Frontend rápido. Si el LCP pasa de 2s, algo está mal.
+- LLMs in real production (not demos), with cost under control and real fallbacks.
+- Squeezing Postgres to its limits before reaching for Redis or a new vector DB.
+- Reliable async systems with River + outbox pattern.
+- Fast frontends. If LCP passes 2s, something is wrong.
 
 ---
 
